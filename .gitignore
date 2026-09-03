@@ -1,0 +1,45 @@
+# Terraform working directories
+.terraform/
+
+# Terraform state files
+*.tfstate
+*.tfstate.*
+
+# Terraform plan files
+*.tfplan
+tfplan
+tfplan-*
+
+# Local variable files (may contain sensitive values)
+terraform.tfvars
+*.auto.tfvars
+backend.hcl
+
+# Keep example variable files under version control
+!terraform.tfvars.example
+
+# Terraform crash logs
+crash.log
+crash.*.log
+
+# Intentionally keep .terraform.lock.hcl under version control.
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+.coverage
+htmlcov/
+
+# Application secrets and local settings
+.env
+.env.*
+!.env.example
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/

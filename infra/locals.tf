@@ -1,0 +1,13 @@
+locals {
+  name = "${var.project_name}-${var.environment}"
+  azs  = slice(data.aws_availability_zones.available.names, 0, 2)
+
+  public_subnets = {
+    for index, az in local.azs : az => cidrsubnet(var.vpc_cidr, 8, index)
+  }
+  database_subnets = {
+    for index, az in local.azs : az => cidrsubnet(var.vpc_cidr, 8, index + 10)
+  }
+
+  repository_full_name = "${var.github_owner}/${var.github_repository}"
+}

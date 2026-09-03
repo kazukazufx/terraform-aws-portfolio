@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: portfolio
+      POSTGRES_USER: portfolio_admin
+      POSTGRES_PASSWORD: portfolio_local
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U portfolio_admin -d portfolio"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    environment:
+      APP_ENVIRONMENT: local
+      APP_VERSION: local
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: portfolio
+      DB_USERNAME: portfolio_admin
+      DB_PASSWORD: portfolio_local
+      DB_SSLMODE: disable
+    command:
+      - /bin/sh
+      - -c
+      - alembic -c app/alembic.ini upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres-data:

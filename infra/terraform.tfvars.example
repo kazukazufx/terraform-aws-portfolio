@@ -1,0 +1,19 @@
+aws_region       = "ap-northeast-1"
+project_name     = "terraform-aws-portfolio"
+environment      = "dev"
+domain_name      = "aws-demo.blog"
+github_owner     = "kazukazufx"
+github_repository = "terraform-aws-portfolio"
+
+# bootstrapで作成したS3バケット名へ変更してください。
+state_bucket_name = "terraform-aws-portfolio-dev-tfstate-unique-suffix"
+
+# 公開リポジトリには実際のメールアドレスをコミットしないでください。
+alert_email = "your-email@example.com"
+
+monthly_budget_amount   = 60
+monthly_budget_currency = "USD"
+
+aurora_max_capacity       = 1
+aurora_auto_pause_seconds = 600
+waf_rate_limit            = 500

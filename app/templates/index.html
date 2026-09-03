@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="AWSとTerraformで構築したクラウドエンジニア向けポートフォリオ">
+    <title>{{ profile.name }} | Cloud Portfolio</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <header class="hero">
+      <nav><a href="#about">About</a><a href="#skills">Skills</a><a href="#architecture">Architecture</a></nav>
+      <div class="hero-content">
+        <p class="eyebrow">AWS PORTFOLIO · {{ environment | upper }}</p>
+        <h1>{{ profile.name }}</h1>
+        <p class="role">{{ profile.role }}</p>
+        <p class="lead">{{ profile.introduction }}</p>
+        <a class="button" href="{{ profile.github_url }}" rel="noreferrer">View on GitHub</a>
+      </div>
+    </header>
+
+    <main>
+      <section id="about">
+        <p class="section-number">01</p>
+        <h2>Built as Infrastructure</h2>
+        <p>このWebサイトは、設計・構築・デプロイ・監視までをコードで再現できる実践的な成果物です。</p>
+      </section>
+
+      <section id="skills">
+        <p class="section-number">02</p>
+        <h2>Skills</h2>
+        <div class="chips">{% for skill in skills %}<span>{{ skill }}</span>{% endfor %}</div>
+      </section>
+
+      <section id="architecture">
+        <p class="section-number">03</p>
+        <h2>Architecture Decisions</h2>
+        <div class="cards">
+          {% for item in architecture %}
+          <article><span>0{{ loop.index }}</span><p>{{ item }}</p></article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section id="api">
+        <p class="section-number">04</p>
+        <h2>Explore the API</h2>
+        <p>FastAPIが生成する仕様書と、Auroraに保存した制作物データを確認できます。</p>
+        <div class="links"><a href="/docs">API Docs</a><a href="/api/status">Status API</a><a href="/api/projects">Projects API</a></div>
+      </section>
+    </main>
+
+    <footer><span>Version {{ version }}</span><span>Managed by Terraform</span></footer>
+  </body>
+</html>

@@ -22,4 +22,9 @@ def build_database_url() -> str:
     )
 
 
+def build_alembic_database_url() -> str:
+    """Escape percent signs for Alembic's ConfigParser interpolation."""
+    return build_database_url().replace("%", "%%")
+
+
 engine = create_engine(build_database_url(), poolclass=NullPool)

@@ -3,10 +3,10 @@ from logging.config import fileConfig
 from alembic import context
 
 from app import models  # noqa: F401
-from app.database import Base, build_database_url
+from app.database import Base, build_alembic_database_url
 
 config = context.config
-config.set_main_option("sqlalchemy.url", build_database_url())
+config.set_main_option("sqlalchemy.url", build_alembic_database_url())
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)

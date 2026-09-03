@@ -2,8 +2,10 @@ aws_region       = "ap-northeast-1"
 project_name     = "terraform-aws-portfolio"
 environment      = "dev"
 domain_name      = "aws-demo.blog"
-github_owner     = "kazukazufx"
+github_owner      = "kazukazufx"
 github_repository = "terraform-aws-portfolio"
+github_owner_id      = 61076595
+github_repository_id = 1356278401
 
 # bootstrapで作成したS3バケット名へ変更してください。
 state_bucket_name = "terraform-aws-portfolio-dev-tfstate-unique-suffix"

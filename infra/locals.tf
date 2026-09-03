@@ -10,4 +10,9 @@ locals {
   }
 
   repository_full_name = "${var.github_owner}/${var.github_repository}"
+  repository_oidc_subject = join("", [
+    "repo:${var.github_owner}@${var.github_owner_id}",
+    "/${var.github_repository}@${var.github_repository_id}",
+    ":environment:${var.environment}",
+  ])
 }

@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "github_app_assume" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${local.repository_full_name}:environment:dev"]
+      values   = [local.repository_oidc_subject]
     }
   }
 }
@@ -150,7 +150,7 @@ data "aws_iam_policy_document" "github_terraform_assume" {
     condition {
       test     = "StringEquals"
       variable = "token.actions.githubusercontent.com:sub"
-      values   = ["repo:${local.repository_full_name}:environment:dev"]
+      values   = [local.repository_oidc_subject]
     }
   }
 }

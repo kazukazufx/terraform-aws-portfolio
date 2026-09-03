@@ -44,6 +44,18 @@ variable "github_repository" {
   default     = "terraform-aws-portfolio"
 }
 
+variable "github_owner_id" {
+  description = "GitHub OIDC immutable subjectで使うOwnerの数値ID"
+  type        = number
+  default     = 61076595
+}
+
+variable "github_repository_id" {
+  description = "GitHub OIDC immutable subjectで使うRepositoryの数値ID"
+  type        = number
+  default     = 1356278401
+}
+
 variable "state_bucket_name" {
   description = "bootstrapで作成したTerraform State用S3バケット名"
   type        = string

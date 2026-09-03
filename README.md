@@ -98,6 +98,7 @@ cp infra/terraform.tfvars.example infra/terraform.tfvars
 - `infra/backend.hcl` の `bucket`
 - `infra/terraform.tfvars` の `state_bucket_name`
 - `infra/terraform.tfvars` の `alert_email`
+- `infra/terraform.tfvars` のGitHub Owner IDとRepository ID（OIDC immutable subject用）
 - `monthly_budget_amount`（初期値60 USDは約1万円を超えにくい安全側の設定）
 
 `backend.hcl` と `terraform.tfvars` は `.gitignore` の対象です。ただし、実行前に `git status` で登録対象になっていないことを必ず確認してください。

@@ -5,6 +5,9 @@ locals {
   public_subnets = {
     for index, az in local.azs : az => cidrsubnet(var.vpc_cidr, 8, index)
   }
+  private_app_subnets = {
+    for index, az in local.azs : az => cidrsubnet(var.vpc_cidr, 8, index + 2)
+  }
   database_subnets = {
     for index, az in local.azs : az => cidrsubnet(var.vpc_cidr, 8, index + 10)
   }

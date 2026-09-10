@@ -94,9 +94,9 @@ resource "aws_ecs_service" "app" {
   }
 
   network_configuration {
-    subnets          = [for subnet in aws_subnet.public : subnet.id]
+    subnets          = [for subnet in aws_subnet.private_app : subnet.id]
     security_groups  = [aws_security_group.ecs.id]
-    assign_public_ip = true
+    assign_public_ip = false
   }
 
   load_balancer {

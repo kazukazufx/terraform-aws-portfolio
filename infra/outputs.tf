@@ -45,6 +45,16 @@ output "public_subnet_ids" {
   value = [for subnet in aws_subnet.public : subnet.id]
 }
 
+output "private_app_subnet_ids" {
+  description = "ECS/Fargateを配置するPrivate Subnet ID"
+  value       = [for subnet in aws_subnet.private_app : subnet.id]
+}
+
+output "nat_gateway_ids" {
+  description = "各AZのNAT Gateway ID"
+  value       = [for nat_gateway in aws_nat_gateway.app : nat_gateway.id]
+}
+
 output "ecs_security_group_id" {
   value = aws_security_group.ecs.id
 }

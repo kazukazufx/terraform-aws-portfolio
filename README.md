@@ -9,8 +9,10 @@ flowchart LR
   User[利用者] --> R53[Route 53]
   R53 --> WAF[AWS WAF]
   WAF --> ALB[Application Load Balancer]
-  ALB --> ECS[ECS / Fargate<br/>FastAPI]
+  ALB --> ECS[ECS / Fargate<br/>Private App Subnet]
   ECS --> Aurora[Aurora PostgreSQL<br/>Serverless v2]
+  ECS --> NAT[NAT Gateway<br/>各AZに1台]
+  NAT --> Internet[外向きインターネット通信]
   GHA[GitHub Actions] -->|OIDC| IAM[IAM Role]
   IAM --> ECR[Amazon ECR]
   ECR --> ECS
@@ -18,9 +20,23 @@ flowchart LR
 
 詳細な設計判断は [docs/architecture.md](docs/architecture.md) を参照してください。
 
+## 5段階の完成状況
+
+| 段階 | 内容 | 成果物 |
+|---|---|---|
+| 1 | VPC、ALB、ECS/Fargate | `infra/network.tf`、`infra/alb.tf`、`infra/ecs.tf` |
+| 2 | GitHub Actions、OIDC、CI/CD | `.github/workflows/`、`infra/iam.tf` |
+| 3 | Aurora、Secrets、WAF、監視 | `infra/database.tf`、`infra/waf.tf`、`infra/monitoring.tf` |
+| 4 | テスト、障害対応、費用評価 | `infra/tests/`、[Runbook](docs/runbook.md)、[費用試算](docs/cost-estimate.md) |
+| 5 | 面接向け3分デモ | [デモ台本](docs/demo-script.md) |
+
+詳細な進捗と、実AWS環境で残っている確認事項は [docs/roadmap.md](docs/roadmap.md) に明記しています。
+
 ## 主な特徴
 
 - 2つのAZにまたがるALBとサブネット
+- 2つのPrivate App SubnetでPublic IPを持たないECS/Fargate
+- 各AZに配置した2台のNAT Gatewayによる外向き通信
 - ALBからだけ接続できるECS Security Group
 - インターネットから到達できないAurora
 - アイドル時に0 ACUへ自動停止するAurora Serverless v2
@@ -28,6 +44,8 @@ flowchart LR
 - Secrets Managerが管理するDBパスワード
 - GitHub OIDCによる長期アクセスキー不要のCI/CD
 - Pull Requestでのテスト、Terraform検証、Plan
+- Mock AWS Providerを使ったTerraform設計ポリシーテスト
+- CheckovによるTerraformセキュリティスキャン
 - `main`更新時のECR Push、DB Migration、ECS Deployment
 - CloudWatch Logs、アラーム、AWS Budgets
 - 公開期間終了後にアプリ基盤をまとめて削除可能
@@ -39,6 +57,8 @@ flowchart LR
 ├── app/                 FastAPI、Alembic migration、画面
 ├── bootstrap/           Terraform State用S3（ローカルState）
 ├── infra/               ポートフォリオAWS基盤（Remote State）
+├── docs/                要件、設計判断、Runbook、費用、デモ台本
+├── scripts/             安全確認付きの障害演習スクリプト
 ├── tests/               FastAPIテスト
 ├── .github/workflows/   CI、Terraform、アプリデプロイ
 ├── compose.yaml         ローカル実行環境
@@ -234,5 +254,19 @@ terraform -chdir=bootstrap init -backend=false
 terraform -chdir=bootstrap validate
 terraform -chdir=infra init -backend=false
 terraform -chdir=infra validate
+terraform -chdir=infra test
 docker build -t portfolio:test .
 ```
+
+CheckovはCIで検出結果を可視化します。個人デモ向けの意図的なコスト判断も含むため現時点では情報提供扱いとし、必須の設計ポリシーは `terraform test` で失敗させます。公開前にCheckovの指摘を確認し、対応またはADRへ判断理由を記録してください。
+
+## 設計・運用資料
+
+- [想定要件](docs/requirements.md)
+- [アーキテクチャ設計](docs/architecture.md)
+- [運用・障害対応Runbook](docs/runbook.md)
+- [費用試算と比較案](docs/cost-estimate.md)
+- [3分デモ台本](docs/demo-script.md)
+- [旧Public ECS構成のADR（置換済み）](docs/adr/0001-cost-optimized-network.md)
+- [Private ECSとNAT GatewayのADR](docs/adr/0003-private-ecs-with-nat-gateways.md)
+- [安全なデリバリーのADR](docs/adr/0002-safe-delivery.md)

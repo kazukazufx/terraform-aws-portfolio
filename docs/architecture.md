@@ -18,17 +18,25 @@ AWS WAF
 Public ALB（2 AZ）
   │ HTTP :8000 / Security Group参照
   ▼
-ECS/Fargate（Public Subnet、Public IP）
+ECS/Fargate（Private App Subnet、Public IPなし、2 AZ）
   │ PostgreSQL :5432 / Security Group参照
   ▼
 Aurora PostgreSQL Serverless v2（Private DB Subnet、2 AZ）
+
+ECS/Fargate
+  │ 外向き通信
+  ▼
+AZごとのNAT Gateway（Public Subnet、Elastic IP）
+  │
+  ▼
+Internet Gateway ─ ECR / CloudWatch Logs / Secrets Manager / 外部API
 ```
 
-## 費用重視でFargateをPublic Subnetに置いた理由
+## ECSをPrivate Subnetへ置く理由
 
-Fargate TaskにはPublic IPを割り当てますが、Security GroupのInboundはALBのSecurity GroupからのPort 8000だけです。そのため、インターネットからTaskへ直接接続することはできません。
+Fargate TaskはPrivate App Subnetへ配置し、Public IPを割り当てません。Security GroupのInboundもALBのSecurity GroupからのPort 8000だけに限定し、ネットワーク経路とファイアウォールの両方でインターネットからTaskへの直接接続を防ぎます。
 
-Private SubnetからECR、CloudWatch Logs、Secrets Managerへ接続するにはNAT Gatewayまたは複数のVPC Interface Endpointが必要で、低トラフィックのポートフォリオでは固定費の割合が大きくなります。今回は月1万円の上限を優先しました。本番向けにはECSをPrivate Subnetへ移し、AZごとのNAT Gatewayまたは必要なVPC Endpointを配置します。
+Private App SubnetはAZごとにRoute Tableを持ち、同じAZのNAT Gatewayへデフォルトルートを向けます。これにより、ECR、CloudWatch Logs、Secrets Manager、外部APIへの外向き通信を確保しながら、インターネット側から接続を開始することはできません。NAT Gatewayは2台分の固定費がかかるため、面接前後の約1週間だけ構築し、終了後はTerraformで削除します。
 
 ## Auroraの自動停止
 
@@ -46,7 +54,7 @@ Private SubnetからECR、CloudWatch Logs、Secrets Managerへ接続するには
 | 対象 | Inbound | Outbound |
 |---|---|---|
 | ALB | Internetから80/443 | VPC内の8000 |
-| ECS | ALB Security Groupから8000 | InternetおよびAurora |
+| ECS | ALB Security Groupから8000 | NAT Gateway経由のInternetおよびAurora |
 | Aurora | ECS Security Groupから5432 | なし |
 
 AuroraのMaster PasswordはRDSがSecrets Managerで生成・ローテーション対象として管理します。ECS Task DefinitionにはSecretの値ではなくARNだけを記録し、起動時にECS Execution Roleが取得します。
@@ -84,8 +92,7 @@ TerraformではECS ServiceのDesired CountとTask Definitionを`ignore_changes`�
 ## 本番構成へ拡張する場合
 
 - ECS Taskを2個以上にする
-- ECSをPrivate Subnetへ移す
-- AZごとにNAT Gatewayを配置する
+- NAT Gateway経由の通信量を分析し、必要に応じてVPC Endpointを追加する
 - Aurora Readerを別AZへ追加する
 - `deletion_protection`と最終Snapshotを有効にする
 - dev、staging、prodでAWSアカウントとStateを分離する

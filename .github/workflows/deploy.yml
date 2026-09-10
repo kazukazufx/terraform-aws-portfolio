@@ -95,11 +95,11 @@ jobs:
           echo "TASK_DEFINITION_ARN=${TASK_DEFINITION_ARN}" >> "${GITHUB_ENV}"
       - name: Discover Fargate network
         run: |
-          PUBLIC_SUBNETS=$(aws ec2 describe-subnets \
+          PRIVATE_APP_SUBNETS=$(aws ec2 describe-subnets \
             --filters \
               "Name=tag:Project,Values=${PROJECT_NAME}" \
               "Name=tag:Environment,Values=${ENVIRONMENT}" \
-              "Name=tag:Tier,Values=public" \
+              "Name=tag:Tier,Values=private-app" \
             --query 'Subnets[].SubnetId' --output text | tr '\t' ',')
           ECS_SECURITY_GROUP=$(aws ec2 describe-security-groups \
             --filters \
@@ -107,13 +107,13 @@ jobs:
               "Name=tag:Environment,Values=${ENVIRONMENT}" \
               "Name=tag:Name,Values=${PROJECT_NAME}-${ENVIRONMENT}-ecs" \
             --query 'SecurityGroups[0].GroupId' --output text)
-          test -n "${PUBLIC_SUBNETS}"
+          test -n "${PRIVATE_APP_SUBNETS}"
           test "${ECS_SECURITY_GROUP}" != "None"
-          echo "PUBLIC_SUBNETS=${PUBLIC_SUBNETS}" >> "${GITHUB_ENV}"
+          echo "PRIVATE_APP_SUBNETS=${PRIVATE_APP_SUBNETS}" >> "${GITHUB_ENV}"
           echo "ECS_SECURITY_GROUP=${ECS_SECURITY_GROUP}" >> "${GITHUB_ENV}"
       - name: Run database migration
         run: |
-          NETWORK="awsvpcConfiguration={subnets=[${PUBLIC_SUBNETS}],securityGroups=[${ECS_SECURITY_GROUP}],assignPublicIp=ENABLED}"
+          NETWORK="awsvpcConfiguration={subnets=[${PRIVATE_APP_SUBNETS}],securityGroups=[${ECS_SECURITY_GROUP}],assignPublicIp=DISABLED}"
           OVERRIDES=$(jq -cn --arg name "${CONTAINER_NAME}" '{containerOverrides:[{name:$name,command:["alembic","-c","app/alembic.ini","upgrade","head"]}]}')
           MIGRATION_TASK=$(aws ecs run-task \
             --cluster "${ECS_CLUSTER}" \

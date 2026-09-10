@@ -4,7 +4,7 @@
 
 画面に公開サイトを表示する。
 
-> 就職活動用サイトを題材に、設計、構築、デプロイ、監視まで再現できるAWS基盤を作りました。アプリの機能量ではなく、安全な変更と運用を主なテーマにしています。
+> FastAPIのWebサイトを題材に、設計、構築、デプロイ、監視まで再現できるAWS基盤を作りました。アプリの機能量ではなく、安全な変更と運用を主なテーマにしています。
 
 ## 0:25〜0:55 構成
 
@@ -34,7 +34,7 @@ CloudWatch Alarm、ECS Service Events、障害演習記録を表示する。
 
 `docs/cost-estimate.md` を表示する。
 
-> ECS Taskは2つのPrivate App Subnetへ配置し、Public IPを持たせていません。各AZのNAT Gatewayで外向き通信の可用性を確保しています。固定費とのトレードオフがあるため、面接前後の約1週間だけ構築し、Auroraの自動停止、ログ保持期間、Budget、Terraform Destroyで費用を管理します。
+> ECS Taskは2つのPrivate App Subnetへ配置し、Public IPを持たせていません。各AZのNAT Gatewayで外向き通信の可用性を確保しています。固定費とのトレードオフがあるため、デモ公開期間だけ構築し、Auroraの自動停止、ログ保持期間、Budget、Terraform Destroyで費用を管理します。
 
 ## 2:50〜3:00 締め
 

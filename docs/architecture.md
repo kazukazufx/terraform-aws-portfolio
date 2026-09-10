@@ -36,7 +36,7 @@ Internet Gateway ─ ECR / CloudWatch Logs / Secrets Manager / 外部API
 
 Fargate TaskはPrivate App Subnetへ配置し、Public IPを割り当てません。Security GroupのInboundもALBのSecurity GroupからのPort 8000だけに限定し、ネットワーク経路とファイアウォールの両方でインターネットからTaskへの直接接続を防ぎます。
 
-Private App SubnetはAZごとにRoute Tableを持ち、同じAZのNAT Gatewayへデフォルトルートを向けます。これにより、ECR、CloudWatch Logs、Secrets Manager、外部APIへの外向き通信を確保しながら、インターネット側から接続を開始することはできません。NAT Gatewayは2台分の固定費がかかるため、面接前後の約1週間だけ構築し、終了後はTerraformで削除します。
+Private App SubnetはAZごとにRoute Tableを持ち、同じAZのNAT Gatewayへデフォルトルートを向けます。これにより、ECR、CloudWatch Logs、Secrets Manager、外部APIへの外向き通信を確保しながら、インターネット側から接続を開始することはできません。NAT Gatewayは2台分の固定費がかかるため、デモ公開期間だけ構築し、終了後はTerraformで削除します。
 
 ## Auroraの自動停止
 
@@ -84,14 +84,15 @@ GitHubのOIDC Subjectでリポジトリ、Branch、Environmentを制限します
 ECS ServiceはECR内のアプリイメージを必要とします。一方、GitHub Actions用RoleとECRはTerraformで作成します。初回Terraform Apply時はServiceをDesired Count 0で作り、最初のアプリWorkflowが次を行います。
 
 ```text
-ECR Push → DB Migration → ECS Task Definition更新 → Desired Count 1
+ECR Push → DB Migration → ECS Task Definition更新 → Desired Count 2
 ```
 
 TerraformではECS ServiceのDesired CountとTask Definitionを`ignore_changes`にし、以降のアプリバージョン管理をCD Workflowへ委譲します。
 
+ECS Service Auto Scalingは通常時の可用性を確保するため最小2タスク、急な負荷に対応するため最大4タスクとします。Target Trackingで平均CPU使用率50%を目標にし、Scale Outは60秒、Scale Inは300秒のCooldownを設定しています。
+
 ## 本番構成へ拡張する場合
 
-- ECS Taskを2個以上にする
 - NAT Gateway経由の通信量を分析し、必要に応じてVPC Endpointを追加する
 - Aurora Readerを別AZへ追加する
 - `deletion_protection`と最終Snapshotを有効にする

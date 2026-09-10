@@ -120,6 +120,15 @@ run "portfolio_baseline" {
   }
 
   assert {
+    condition = (
+      aws_appautoscaling_target.ecs.min_capacity == 2 &&
+      aws_appautoscaling_target.ecs.max_capacity == 4 &&
+      aws_appautoscaling_policy.ecs_cpu.target_tracking_scaling_policy_configuration[0].target_value == 50
+    )
+    error_message = "ECS must scale between two and four tasks at a 50 percent CPU target."
+  }
+
+  assert {
     condition     = aws_ecr_repository.app.image_tag_mutability == "IMMUTABLE" && aws_ecr_repository.app.image_scanning_configuration[0].scan_on_push
     error_message = "ECR images must be immutable and scanned on push."
   }

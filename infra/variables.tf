@@ -108,6 +108,39 @@ variable "container_memory" {
   default     = 512
 }
 
+variable "ecs_min_capacity" {
+  description = "ECS Service Auto Scalingの最小タスク数"
+  type        = number
+  default     = 2
+
+  validation {
+    condition     = var.ecs_min_capacity >= 1
+    error_message = "ecs_min_capacityは1以上にしてください。"
+  }
+}
+
+variable "ecs_max_capacity" {
+  description = "ECS Service Auto Scalingの最大タスク数"
+  type        = number
+  default     = 4
+
+  validation {
+    condition     = var.ecs_max_capacity >= var.ecs_min_capacity
+    error_message = "ecs_max_capacityはecs_min_capacity以上にしてください。"
+  }
+}
+
+variable "ecs_cpu_target" {
+  description = "ECS Service Auto Scalingが維持する平均CPU使用率（%）"
+  type        = number
+  default     = 50
+
+  validation {
+    condition     = var.ecs_cpu_target > 0 && var.ecs_cpu_target <= 100
+    error_message = "ecs_cpu_targetは0より大きく100以下にしてください。"
+  }
+}
+
 variable "image_tag" {
   description = "初回タスク定義のイメージタグ。ECSは最初のCI/CDまで0タスクで作成"
   type        = string

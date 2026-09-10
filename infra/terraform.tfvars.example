@@ -18,4 +18,7 @@ monthly_budget_currency = "USD"
 
 aurora_max_capacity       = 1
 aurora_auto_pause_seconds = 600
+ecs_min_capacity          = 2
+ecs_max_capacity          = 4
+ecs_cpu_target            = 50
 waf_rate_limit            = 500

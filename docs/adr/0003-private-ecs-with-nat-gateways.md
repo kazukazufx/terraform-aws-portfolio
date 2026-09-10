@@ -6,7 +6,7 @@
 
 ## 文脈
 
-ADR-0001では固定費を抑えるため、ECS TaskをPublic Subnetへ配置し、Security GroupでALBからの通信だけを許可した。その後、実際にAWS環境を稼働させる期間を面接前後の約1週間に限定できる見通しとなり、NAT Gatewayの固定費を許容できるようになった。
+ADR-0001では固定費を抑えるため、ECS TaskをPublic Subnetへ配置し、Security GroupでALBからの通信だけを許可した。その後、実際にAWS環境をデモ公開期間だけ稼働させる方針とし、NAT Gatewayの固定費を許容できるようになった。
 
 ポートフォリオでは、商用環境に近いネットワーク分離と、AZ障害を考慮した外向き通信経路を示したい。
 

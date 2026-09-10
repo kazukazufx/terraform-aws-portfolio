@@ -60,7 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - name: Scan Terraform configuration
-        uses: bridgecrewio/checkov-action@v12.1347.0
+        uses: bridgecrewio/checkov-action@v12.3122.0
         with:
           directory: .
           framework: terraform

@@ -4,19 +4,9 @@ FastAPIアプリケーションと、その実行基盤となるAWS環境をTerr
 
 ## アーキテクチャ
 
-```mermaid
-flowchart LR
-  User[利用者] --> R53[Route 53]
-  R53 --> WAF[AWS WAF]
-  WAF --> ALB[Application Load Balancer]
-  ALB --> ECS[ECS / Fargate<br/>Private App Subnet]
-  ECS --> Aurora[Aurora PostgreSQL<br/>Serverless v2]
-  ECS --> NAT[NAT Gateway<br/>各AZに1台]
-  NAT --> Internet[外向きインターネット通信]
-  GHA[GitHub Actions] -->|OIDC| IAM[IAM Role]
-  IAM --> ECR[Amazon ECR]
-  ECR --> ECS
-```
+![AWSインフラストラクチャ構成図](docs/architecture-diagram.svg)
+
+[PNG版](docs/architecture-diagram.png) / [diagrams.net（draw.io）編集用ファイル](docs/architecture-diagram.drawio)
 
 システムは東京リージョンの2つのAvailability Zoneにまたがって構成されます。ALBだけをPublic Subnetへ配置し、Fargate TaskとAuroraはPrivate Subnetに配置します。
 
@@ -108,6 +98,8 @@ Migrationが失敗した場合はECS Serviceを更新しません。デプロイ
 ## 設計・運用資料
 
 - [アーキテクチャ設計](docs/architecture.md)
+- [AWS構成図（SVG）](docs/architecture-diagram.svg)
+- [AWS構成図（diagrams.net編集用）](docs/architecture-diagram.drawio)
 - [想定要件](docs/requirements.md)
 - [構築・更新・削除手順](docs/deployment-guide.md)
 - [運用・障害対応Runbook](docs/runbook.md)

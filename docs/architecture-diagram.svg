@@ -1,0 +1,280 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Terraform AWS Portfolio Architecture</title>
+  <desc id="desc">Two Availability Zone AWS architecture with Route 53, WAF, ALB, private ECS Fargate tasks, NAT gateways, Aurora PostgreSQL, CI/CD, monitoring, and Terraform remote state.</desc>
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0f172a" flood-opacity="0.16"/>
+    </filter>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#475569"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L9,4.5 L0,9 z" fill="#2563eb"/>
+    </marker>
+    <style>
+      text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif; fill: #172033; }
+      .title { font-size: 28px; font-weight: 700; }
+      .subtitle { font-size: 14px; fill: #526174; }
+      .boundary-label { font-size: 15px; font-weight: 700; }
+      .az-label { font-size: 14px; font-weight: 700; fill: #334155; }
+      .subnet-label { font-size: 13px; font-weight: 700; }
+      .cidr { font-size: 11px; fill: #64748b; }
+      .service-name { font-size: 13px; font-weight: 700; text-anchor: middle; }
+      .service-detail { font-size: 11px; fill: #475569; text-anchor: middle; }
+      .icon-text { font-size: 12px; font-weight: 800; fill: #ffffff; text-anchor: middle; dominant-baseline: middle; }
+      .flow-label { font-size: 11px; fill: #475569; text-anchor: middle; }
+      .legend { font-size: 11px; fill: #334155; }
+      .arrow { stroke: #475569; stroke-width: 2; fill: none; marker-end: url(#arrow); }
+      .arrow-blue { stroke: #2563eb; stroke-width: 2; fill: none; marker-end: url(#arrow-blue); }
+      .arrow-dashed { stroke: #64748b; stroke-width: 1.7; stroke-dasharray: 6 5; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1000" fill="#f8fafc"/>
+  <text x="40" y="46" class="title">AWS インフラストラクチャ構成図</text>
+  <text x="40" y="72" class="subtitle">Terraform / ap-northeast-1 / Multi-AZ / ECS on Fargate</text>
+
+  <!-- External actors -->
+  <g filter="url(#shadow)">
+    <rect x="30" y="190" width="120" height="76" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+    <circle cx="90" cy="214" r="12" fill="#64748b"/>
+    <path d="M68 247 Q90 225 112 247" fill="#64748b"/>
+    <text x="90" y="258" class="service-name">利用者</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="30" y="96" width="120" height="66" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+    <rect x="69" y="106" width="42" height="25" rx="4" fill="#24292f"/>
+    <text x="90" y="119" class="icon-text">GH</text>
+    <text x="90" y="149" class="service-name">GitHub Actions</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="30" y="820" width="120" height="66" rx="8" fill="#ffffff" stroke="#94a3b8"/>
+    <rect x="69" y="830" width="42" height="25" rx="4" fill="#7b42bc"/>
+    <text x="90" y="843" class="icon-text">TF</text>
+    <text x="90" y="873" class="service-name">Terraform</text>
+  </g>
+
+  <!-- AWS / Region boundaries -->
+  <rect x="180" y="88" width="1380" height="850" rx="12" fill="#ffffff" stroke="#ff9900" stroke-width="2.5"/>
+  <rect x="180" y="88" width="1380" height="38" rx="12" fill="#fff7e6"/>
+  <text x="200" y="113" class="boundary-label">AWS Cloud</text>
+
+  <rect x="205" y="138" width="1330" height="775" rx="10" fill="#fbfdff" stroke="#64748b" stroke-width="1.5" stroke-dasharray="8 5"/>
+  <text x="225" y="165" class="boundary-label">Region: ap-northeast-1 (Tokyo)</text>
+
+  <!-- Edge services -->
+  <g filter="url(#shadow)">
+    <rect x="205" y="192" width="118" height="76" rx="8" fill="#ffffff" stroke="#8b5cf6"/>
+    <rect x="241" y="202" width="46" height="32" rx="5" fill="#8b5cf6"/>
+    <text x="264" y="219" class="icon-text">R53</text>
+    <text x="264" y="249" class="service-name">Route 53</text>
+    <text x="264" y="263" class="service-detail">aws-demo.blog</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="341" y="192" width="118" height="76" rx="8" fill="#ffffff" stroke="#dd344c"/>
+    <rect x="377" y="202" width="46" height="32" rx="5" fill="#dd344c"/>
+    <text x="400" y="219" class="icon-text">WAF</text>
+    <text x="400" y="249" class="service-name">AWS WAF</text>
+    <text x="400" y="263" class="service-detail">Managed Rules</text>
+  </g>
+
+  <!-- VPC -->
+  <rect x="485" y="190" width="805" height="660" rx="10" fill="#f7fbff" stroke="#3b82f6" stroke-width="2"/>
+  <rect x="485" y="190" width="805" height="36" rx="10" fill="#eaf4ff"/>
+  <text x="505" y="214" class="boundary-label">VPC  10.0.0.0/16</text>
+
+  <!-- Availability Zones -->
+  <rect x="510" y="240" width="365" height="585" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="5 4"/>
+  <rect x="895" y="240" width="365" height="585" rx="8" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="5 4"/>
+  <text x="530" y="265" class="az-label">Availability Zone A</text>
+  <text x="915" y="265" class="az-label">Availability Zone C</text>
+
+  <!-- Public subnets -->
+  <rect x="530" y="280" width="325" height="170" rx="7" fill="#eefbf3" stroke="#22a06b"/>
+  <text x="547" y="302" class="subnet-label">Public Subnet</text>
+  <text x="547" y="319" class="cidr">10.0.0.0/24</text>
+  <rect x="915" y="280" width="325" height="170" rx="7" fill="#eefbf3" stroke="#22a06b"/>
+  <text x="932" y="302" class="subnet-label">Public Subnet</text>
+  <text x="932" y="319" class="cidr">10.0.1.0/24</text>
+
+  <!-- ALB spanning both public subnets -->
+  <g filter="url(#shadow)">
+    <rect x="665" y="304" width="440" height="70" rx="8" fill="#ffffff" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect x="685" y="321" width="46" height="34" rx="5" fill="#8b5cf6"/>
+    <text x="708" y="339" class="icon-text">ALB</text>
+    <text x="883" y="332" class="service-name">Application Load Balancer</text>
+    <text x="883" y="351" class="service-detail">HTTPS :443 / Multi-AZ / ACM Certificate</text>
+  </g>
+
+  <!-- NAT Gateways -->
+  <g filter="url(#shadow)">
+    <rect x="560" y="382" width="185" height="52" rx="7" fill="#ffffff" stroke="#8b5cf6"/>
+    <rect x="574" y="393" width="38" height="30" rx="4" fill="#8b5cf6"/>
+    <text x="593" y="409" class="icon-text">NAT</text>
+    <text x="673" y="405" class="service-name">NAT Gateway</text>
+    <text x="673" y="420" class="service-detail">Elastic IP</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="945" y="382" width="185" height="52" rx="7" fill="#ffffff" stroke="#8b5cf6"/>
+    <rect x="959" y="393" width="38" height="30" rx="4" fill="#8b5cf6"/>
+    <text x="978" y="409" class="icon-text">NAT</text>
+    <text x="1058" y="405" class="service-name">NAT Gateway</text>
+    <text x="1058" y="420" class="service-detail">Elastic IP</text>
+  </g>
+
+  <!-- Private app subnets -->
+  <rect x="530" y="468" width="325" height="150" rx="7" fill="#fff7ed" stroke="#f59e0b"/>
+  <text x="547" y="490" class="subnet-label">Private App Subnet</text>
+  <text x="547" y="507" class="cidr">10.0.2.0/24</text>
+  <rect x="915" y="468" width="325" height="150" rx="7" fill="#fff7ed" stroke="#f59e0b"/>
+  <text x="932" y="490" class="subnet-label">Private App Subnet</text>
+  <text x="932" y="507" class="cidr">10.0.3.0/24</text>
+
+  <g filter="url(#shadow)">
+    <rect x="585" y="522" width="215" height="74" rx="8" fill="#ffffff" stroke="#ed7100"/>
+    <rect x="601" y="538" width="44" height="36" rx="5" fill="#ed7100"/>
+    <text x="623" y="557" class="icon-text">ECS</text>
+    <text x="715" y="548" class="service-name">Fargate Task</text>
+    <text x="715" y="566" class="service-detail">FastAPI :8000</text>
+    <text x="715" y="582" class="service-detail">Public IPなし</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="970" y="522" width="215" height="74" rx="8" fill="#ffffff" stroke="#ed7100"/>
+    <rect x="986" y="538" width="44" height="36" rx="5" fill="#ed7100"/>
+    <text x="1008" y="557" class="icon-text">ECS</text>
+    <text x="1100" y="548" class="service-name">Fargate Task</text>
+    <text x="1100" y="566" class="service-detail">FastAPI :8000</text>
+    <text x="1100" y="582" class="service-detail">Public IPなし</text>
+  </g>
+  <rect x="695" y="605" width="380" height="24" rx="12" fill="#fff1db" stroke="#ed7100"/>
+  <text x="885" y="622" class="service-detail">ECS Service Auto Scaling: 最小2 / 最大4 / CPU 50%</text>
+
+  <!-- Database subnets -->
+  <rect x="530" y="650" width="325" height="145" rx="7" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="547" y="672" class="subnet-label">Database Subnet</text>
+  <text x="547" y="689" class="cidr">10.0.10.0/24</text>
+  <rect x="915" y="650" width="325" height="145" rx="7" fill="#eff6ff" stroke="#3b82f6"/>
+  <text x="932" y="672" class="subnet-label">Database Subnet</text>
+  <text x="932" y="689" class="cidr">10.0.11.0/24</text>
+
+  <g filter="url(#shadow)">
+    <rect x="672" y="688" width="426" height="84" rx="9" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <ellipse cx="715" cy="722" rx="24" ry="10" fill="#3b82f6"/>
+    <rect x="691" y="722" width="48" height="25" fill="#3b82f6"/>
+    <ellipse cx="715" cy="747" rx="24" ry="10" fill="#2563eb"/>
+    <text x="885" y="718" class="service-name">Aurora PostgreSQL Serverless v2</text>
+    <text x="885" y="739" class="service-detail">DB Subnet Group (2 AZ) / 暗号化 / Public Accessなし</text>
+    <text x="885" y="758" class="service-detail">0〜1 ACU・Secrets Manager認証情報</text>
+  </g>
+
+  <!-- Internet Gateway attached to the VPC boundary -->
+  <g filter="url(#shadow)">
+    <rect x="1150" y="164" width="105" height="52" rx="7" fill="#ffffff" stroke="#8b5cf6" stroke-width="1.5"/>
+    <rect x="1163" y="175" width="34" height="30" rx="4" fill="#8b5cf6"/>
+    <text x="1180" y="191" class="icon-text">IGW</text>
+    <text x="1223" y="187" class="service-name">Internet</text>
+    <text x="1223" y="202" class="service-detail">Gateway</text>
+  </g>
+
+  <!-- Regional services outside VPC -->
+  <rect x="1315" y="190" width="195" height="660" rx="9" fill="#f8fafc" stroke="#94a3b8"/>
+  <text x="1332" y="215" class="boundary-label">Managed Services</text>
+
+  <g filter="url(#shadow)">
+    <rect x="1337" y="240" width="151" height="66" rx="7" fill="#ffffff" stroke="#ed7100"/>
+    <rect x="1350" y="256" width="40" height="32" rx="4" fill="#ed7100"/>
+    <text x="1370" y="273" class="icon-text">ECR</text>
+    <text x="1437" y="266" class="service-name">Amazon ECR</text>
+    <text x="1437" y="284" class="service-detail">Container Image</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1337" y="325" width="151" height="66" rx="7" fill="#ffffff" stroke="#dd344c"/>
+    <rect x="1350" y="341" width="40" height="32" rx="4" fill="#dd344c"/>
+    <text x="1370" y="358" class="icon-text">SEC</text>
+    <text x="1437" y="351" class="service-name">Secrets Manager</text>
+    <text x="1437" y="369" class="service-detail">DB Credentials</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1337" y="410" width="151" height="66" rx="7" fill="#ffffff" stroke="#c026d3"/>
+    <rect x="1350" y="426" width="40" height="32" rx="4" fill="#c026d3"/>
+    <text x="1370" y="443" class="icon-text">CW</text>
+    <text x="1437" y="436" class="service-name">CloudWatch</text>
+    <text x="1437" y="454" class="service-detail">Logs / Alarms</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1337" y="495" width="151" height="66" rx="7" fill="#ffffff" stroke="#c026d3"/>
+    <rect x="1350" y="511" width="40" height="32" rx="4" fill="#c026d3"/>
+    <text x="1370" y="528" class="icon-text">SNS</text>
+    <text x="1437" y="521" class="service-name">Amazon SNS</text>
+    <text x="1437" y="539" class="service-detail">Email通知</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1337" y="580" width="151" height="66" rx="7" fill="#ffffff" stroke="#c026d3"/>
+    <rect x="1350" y="596" width="40" height="32" rx="4" fill="#c026d3"/>
+    <text x="1370" y="613" class="icon-text">BGT</text>
+    <text x="1437" y="606" class="service-name">AWS Budgets</text>
+    <text x="1437" y="624" class="service-detail">50% Cost Alert</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1337" y="665" width="151" height="66" rx="7" fill="#ffffff" stroke="#dd344c"/>
+    <rect x="1350" y="681" width="40" height="32" rx="4" fill="#dd344c"/>
+    <text x="1370" y="698" class="icon-text">IAM</text>
+    <text x="1437" y="691" class="service-name">IAM / OIDC</text>
+    <text x="1437" y="709" class="service-detail">Temporary Credentials</text>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="1337" y="750" width="151" height="66" rx="7" fill="#ffffff" stroke="#3f8624"/>
+    <rect x="1350" y="766" width="40" height="32" rx="4" fill="#3f8624"/>
+    <text x="1370" y="783" class="icon-text">S3</text>
+    <text x="1437" y="776" class="service-name">Amazon S3</text>
+    <text x="1437" y="794" class="service-detail">Terraform State</text>
+  </g>
+
+  <!-- Primary request flow -->
+  <path class="arrow-blue" d="M150 228 H205"/>
+  <path class="arrow-blue" d="M323 230 H341"/>
+  <path class="arrow-blue" d="M459 230 H600 Q625 230 650 304"/>
+  <text x="178" y="217" class="flow-label">HTTPS</text>
+  <path class="arrow-blue" d="M810 374 V500 Q810 510 790 522"/>
+  <path class="arrow-blue" d="M960 374 V500 Q960 510 980 522"/>
+  <text x="884" y="455" class="flow-label">ALB SG → ECS SG / TCP 8000</text>
+  <path class="arrow-blue" d="M692 596 V670 Q692 680 750 688"/>
+  <path class="arrow-blue" d="M1078 596 V670 Q1078 680 1020 688"/>
+  <text x="885" y="653" class="flow-label">ECS SG → DB SG / TCP 5432</text>
+
+  <!-- Outbound paths -->
+  <path class="arrow" d="M620 522 V449 Q620 440 635 434"/>
+  <path class="arrow" d="M1005 522 V449 Q1005 440 1020 434"/>
+  <path class="arrow" d="M745 408 H1128 Q1202 408 1202 334 V216"/>
+  <path class="arrow" d="M1130 408 H1150"/>
+  <path class="arrow" d="M1255 190 H1285 V150 H1540"/>
+  <text x="1160" y="362" class="flow-label">外向き通信</text>
+
+  <!-- Managed service integrations -->
+  <path class="arrow-dashed" d="M1185 550 H1300 Q1310 550 1337 273"/>
+  <path class="arrow-dashed" d="M1185 560 H1305 Q1315 560 1337 358"/>
+  <path class="arrow-dashed" d="M1185 570 H1310 Q1320 570 1337 443"/>
+  <path class="arrow-dashed" d="M1337 443 H1305 Q1295 443 1260 330"/>
+  <path class="arrow-dashed" d="M1412 476 V495"/>
+  <path class="arrow-dashed" d="M1412 646 V665"/>
+
+  <!-- CI/CD and Terraform -->
+  <path class="arrow" d="M150 129 H166 V132 H1300 V698 H1337"/>
+  <text x="790" y="127" class="flow-label">GitHub OIDC → IAM Role → ECR Push / ECS Deploy</text>
+  <path class="arrow" d="M150 853 H1337"/>
+  <text x="755" y="842" class="flow-label">Terraform Plan / Apply</text>
+  <path class="arrow-dashed" d="M1412 850 V816"/>
+  <text x="1465" y="838" class="flow-label">Remote State</text>
+
+  <!-- Security groups legend -->
+  <rect x="205" y="865" width="1085" height="48" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="225" y="886" class="legend">Security Groups:</text>
+  <text x="335" y="886" class="legend">Internet → ALB : 80/443</text>
+  <text x="535" y="886" class="legend">ALB → ECS : 8000</text>
+  <text x="695" y="886" class="legend">ECS → Aurora : 5432</text>
+  <text x="885" y="886" class="legend">DB SubnetはInternet Routeなし</text>
+  <text x="225" y="904" class="legend">青実線: リクエスト経路　灰実線: 外向き通信　灰破線: 管理・監視・CI/CD連携</text>
+</svg>

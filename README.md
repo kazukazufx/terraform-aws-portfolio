@@ -32,7 +32,7 @@ FastAPIアプリケーションと、その実行基盤となるAWS環境をTerr
 
 - FastAPIによるWeb画面、REST API、ヘルスチェック
 - SQLAlchemyとAlembicによるデータアクセスとスキーマ移行
-- Aurora PostgreSQL Serverless v2を採用し、アイドル時は0 ACUへ自動停止
+- Aurora PostgreSQL Serverless v2を2 AZに1台ずつ配置し、アイドル時は0 ACUへ自動停止
 - Read-only Root Filesystemと非Rootユーザーでコンテナを実行
 
 ### CI/CDと品質管理

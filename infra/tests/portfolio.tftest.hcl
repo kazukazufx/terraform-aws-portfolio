@@ -110,8 +110,15 @@ run "portfolio_baseline" {
   }
 
   assert {
-    condition     = aws_rds_cluster.portfolio.storage_encrypted && !aws_rds_cluster_instance.portfolio.publicly_accessible
-    error_message = "Aurora storage must be encrypted and its instance must remain private."
+    condition = (
+      aws_rds_cluster.portfolio.storage_encrypted &&
+      length(aws_rds_cluster_instance.portfolio) == 2 &&
+      alltrue([for instance in aws_rds_cluster_instance.portfolio : !instance.publicly_accessible]) &&
+      toset([for instance in aws_rds_cluster_instance.portfolio : instance.availability_zone]) == toset(local.azs) &&
+      aws_rds_cluster.portfolio.serverlessv2_scaling_configuration[0].min_capacity == 0 &&
+      aws_rds_cluster.portfolio.serverlessv2_scaling_configuration[0].max_capacity == 2
+    )
+    error_message = "Aurora must have one private 0-2 ACU instance in each Availability Zone with encrypted storage."
   }
 
   assert {

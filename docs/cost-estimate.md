@@ -6,7 +6,7 @@
 
 - 東京リージョン
 - ECS Task: 0.25 vCPU / 0.5 GiB、通常2 Task（Auto Scalingで最大4 Task）
-- Aurora Serverless v2: 0〜1 ACU、10分で自動停止
+- Aurora Serverless v2: 2 DBインスタンス、各0〜2 ACU（合計最大4 ACU）、10分で自動停止
 - 小規模な個人ポートフォリオの通信量
 - ドメイン取得・更新費はAWS費用に含めない
 
@@ -17,7 +17,7 @@
 | Application Load Balancer | 稼働時間、LCU | 公開期間だけ作成する |
 | ECS Fargate | vCPU、メモリ、タスク数、稼働時間 | 最小Taskサイズ、2〜4 Task、公開終了時に削除 |
 | NAT Gateway | 2台の稼働時間、処理データ量、Public IPv4 | デモ公開期間だけ作成 |
-| Aurora Serverless v2 | ACU稼働時間、ストレージ、I/O | 0 ACU自動停止、最大1 ACU |
+| Aurora Serverless v2 | 2 DBインスタンスのACU稼働時間、ストレージ、I/O | 各インスタンス0 ACU自動停止、各最大2 ACU |
 | AWS WAF | Web ACL、Rule、Request | 必要最小限のManaged Rule |
 | Route 53 | Hosted Zone、DNS Query | Hosted Zoneを1つに限定 |
 | CloudWatch | Logs、Metrics、Alarm | Logsを7日保持 |

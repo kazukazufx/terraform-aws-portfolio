@@ -161,14 +161,23 @@
   <text x="932" y="689" class="cidr">10.0.11.0/24</text>
 
   <g filter="url(#shadow)">
-    <rect x="672" y="688" width="426" height="84" rx="9" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
-    <ellipse cx="715" cy="722" rx="24" ry="10" fill="#3b82f6"/>
-    <rect x="691" y="722" width="48" height="25" fill="#3b82f6"/>
-    <ellipse cx="715" cy="747" rx="24" ry="10" fill="#2563eb"/>
-    <text x="885" y="718" class="service-name">Aurora PostgreSQL Serverless v2</text>
-    <text x="885" y="739" class="service-detail">DB Subnet Group (2 AZ) / 暗号化 / Public Accessなし</text>
-    <text x="885" y="758" class="service-detail">0〜1 ACU・Secrets Manager認証情報</text>
+    <rect x="585" y="700" width="215" height="64" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <ellipse cx="615" cy="724" rx="16" ry="7" fill="#3b82f6"/>
+    <rect x="599" y="724" width="32" height="16" fill="#3b82f6"/>
+    <ellipse cx="615" cy="740" rx="16" ry="7" fill="#2563eb"/>
+    <text x="704" y="724" class="service-name">Aurora DB Instance</text>
+    <text x="704" y="744" class="service-detail">Serverless v2 / AZ A</text>
   </g>
+  <g filter="url(#shadow)">
+    <rect x="970" y="700" width="215" height="64" rx="8" fill="#ffffff" stroke="#3b82f6" stroke-width="1.5"/>
+    <ellipse cx="1000" cy="724" rx="16" ry="7" fill="#3b82f6"/>
+    <rect x="984" y="724" width="32" height="16" fill="#3b82f6"/>
+    <ellipse cx="1000" cy="740" rx="16" ry="7" fill="#2563eb"/>
+    <text x="1089" y="724" class="service-name">Aurora DB Instance</text>
+    <text x="1089" y="744" class="service-detail">Serverless v2 / AZ C</text>
+  </g>
+  <rect x="695" y="770" width="380" height="22" rx="11" fill="#eaf4ff" stroke="#3b82f6"/>
+  <text x="885" y="785" class="service-detail">Aurora Cluster: Writer 1 + Reader 1 / 各0〜2 ACU / 自動停止</text>
 
   <!-- Internet Gateway attached to the VPC boundary -->
   <g filter="url(#shadow)">
@@ -241,8 +250,8 @@
   <path class="arrow-blue" d="M810 374 V500 Q810 510 790 522"/>
   <path class="arrow-blue" d="M960 374 V500 Q960 510 980 522"/>
   <text x="884" y="455" class="flow-label">ALB SG → ECS SG / TCP 8000</text>
-  <path class="arrow-blue" d="M692 596 V670 Q692 680 750 688"/>
-  <path class="arrow-blue" d="M1078 596 V670 Q1078 680 1020 688"/>
+  <path class="arrow-blue" d="M692 596 V700"/>
+  <path class="arrow-blue" d="M1078 596 V700"/>
   <text x="885" y="653" class="flow-label">ECS SG → DB SG / TCP 5432</text>
 
   <!-- Outbound paths -->

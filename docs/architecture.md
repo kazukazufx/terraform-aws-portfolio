@@ -21,7 +21,7 @@ Public ALB（2 AZ）
 ECS/Fargate（Private App Subnet、Public IPなし、2 AZ）
   │ PostgreSQL :5432 / Security Group参照
   ▼
-Aurora PostgreSQL Serverless v2（Private DB Subnet、2 AZ）
+Aurora PostgreSQL Serverless v2（Private DB Subnet、各AZに1 DBインスタンス）
 
 ECS/Fargate
   │ 外向き通信
@@ -40,8 +40,9 @@ Private App SubnetはAZごとにRoute Tableを持ち、同じAZのNAT Gatewayへ
 
 ## Auroraの自動停止
 
-- Aurora PostgreSQL Serverless v2を1 Writerで使用
-- 最小0 ACU、最大1 ACU
+- Aurora PostgreSQL Serverless v2を2 DBインスタンスで使用（通常はWriter 1台、Reader 1台）
+- 各AZに1台ずつ配置し、障害時はReaderをWriterへ昇格
+- 各DBインスタンスが最小0 ACU、最大2 ACU（2台合計では最大4 ACU）
 - 10分間アイドルで自動停止
 - `/health` はDBへ接続しないため、ALBの確認でAuroraを起こさない
 - APIは接続失敗時に再試行する

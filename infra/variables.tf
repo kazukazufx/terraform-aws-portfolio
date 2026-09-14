@@ -75,9 +75,9 @@ variable "aurora_engine_version" {
 }
 
 variable "aurora_max_capacity" {
-  description = "Aurora Serverless v2の最大ACU"
+  description = "Aurora Serverless v2の各DBインスタンスの最大ACU"
   type        = number
-  default     = 1
+  default     = 2
 
   validation {
     condition     = var.aurora_max_capacity >= 0.5 && var.aurora_max_capacity <= 16

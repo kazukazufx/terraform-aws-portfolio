@@ -42,11 +42,15 @@ resource "aws_rds_cluster" "portfolio" {
 }
 
 resource "aws_rds_cluster_instance" "portfolio" {
-  identifier         = "${local.name}-writer"
+  for_each = local.database_subnets
+
+  identifier         = "${local.name}-${each.key}"
   cluster_identifier = aws_rds_cluster.portfolio.id
   instance_class     = "db.serverless"
   engine             = aws_rds_cluster.portfolio.engine
   engine_version     = aws_rds_cluster.portfolio.engine_version
+  availability_zone  = each.key
+  promotion_tier     = each.key == local.azs[0] ? 0 : 1
 
   publicly_accessible          = false
   auto_minor_version_upgrade   = true

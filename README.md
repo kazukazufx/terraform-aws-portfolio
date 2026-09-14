@@ -107,7 +107,3 @@ Migrationが失敗した場合はECS Serviceを更新しません。デプロイ
 - [Private ECSとNAT GatewayのADR](docs/adr/0003-private-ecs-with-nat-gateways.md)
 - [安全なデリバリーのADR](docs/adr/0002-safe-delivery.md)
 - [旧Public ECS構成のADR（置換済み）](docs/adr/0001-cost-optimized-network.md)
-
-## 現在の状態
-
-Terraformコードと自動テストは実装済みです。AWS環境は常時稼働させず、必要な期間だけ構築する運用を想定しています。

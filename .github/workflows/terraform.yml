@@ -36,7 +36,7 @@ jobs:
         with:
           terraform_version: 1.15.8
       - name: Configure temporary AWS credentials
-        uses: aws-actions/configure-aws-credentials@v6.2.3
+        uses: aws-actions/configure-aws-credentials@v6.2.4
         with:
           role-to-assume: ${{ vars.AWS_TERRAFORM_ROLE_ARN }}
           aws-region: ap-northeast-1
